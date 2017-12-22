@@ -79,11 +79,48 @@ def abalonetest():
     # print ("mean squared error: ", mean_squared_error(y_pred, y_test)*len(y_test))
     # print (lr.score(x_test, y_test))
 
+def ridgeTest():
+    datas = np.loadtxt("abalone.txt")
+    x = datas[:, :-1]
+    y = datas[:, -1]
 
+    x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.1)
+    smallError = np.inf
+    smallLr = None
+    for i in range(50):
+        lr = linear_model.Ridge(np.exp(i-20))
+        lr.fit(x_train, y_train)
+        y_pred = lr.predict(x_test)
+        if mean_squared_error(y_pred, y_test)*len(y_test) < smallError:
+            smallError = mean_squared_error(y_pred, y_test)*len(y_test)
+            smallLr = lr
+    print smallError
+    print smallLr.coef_
+
+def lassoTest():
+    datas = np.loadtxt("abalone.txt")
+    x = datas[:, :-1]
+    y = datas[:, -1]
+
+    x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.1)
+    smallError = np.inf
+    smallLr = None
+    for i in range(50):
+        lr = linear_model.Lasso(np.exp(i-20))
+        lr.fit(x_train, y_train)
+        y_pred = lr.predict(x_test)
+        if mean_squared_error(y_pred, y_test)*len(y_test) < smallError:
+            smallError = mean_squared_error(y_pred, y_test)*len(y_test)
+            smallLr = lr
+    print smallError
+    print smallLr.coef_
 
 
 
 if __name__ == "__main__":
     #lrtest()
-    abalonetest()
-    lwlrTest(0.01)
+    #abalonetest()
+    #lwlrTest(0.01)
+    ridgeTest()
+    print "lasso"
+    lassoTest()
